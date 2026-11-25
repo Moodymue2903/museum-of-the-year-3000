@@ -67,6 +67,14 @@ def main():
     if problems:
         fail("; ".join(problems))
 
+    # The gate requires UTF-8 text: prove the line encodes before writing,
+    # so a bad line fails here with a clear message instead of halfway
+    # through the write-and-verify step below.
+    try:
+        line.encode("utf-8")
+    except UnicodeEncodeError:
+        fail("line is not valid UTF-8")
+
     write_entry(line)
     error = verify_written(line)
     if error is not None:
